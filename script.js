@@ -47,8 +47,28 @@ $(document).ready(function(){
       });
     //Get Train Data from Firebase DB
     //Append Train Data to Table with a loop ?
-      
+    
     //on value snapshot <---
+    dataRef.ref().on("child_added", function (childSnapshot) {
+        var train_name = childSnapshot.val().name;
+        var train_Destination = childSnapshot.val().destination;
+        var train_time = childSnapshot.val().time;
+        var train_Frequency = childSnapshot.val().frequency;
+        
+        // We go one year back to asure current time is after
+        var firstTimeConverted = moment(train_time, "HH:mm").subtract(1, "years");
+        var currentTime = moment();
+        console.log("Current Time: " + moment(currentTime).format("hh:mm"));
+
+        // Calculate diference between current and user entered time
+        var time_diference = moment().diff(moment(firstTimeConverted),"minutes");
+        console.log("Diference in Time: " + time_diference);
+
+        var trainArrival = time_diference % train_Frequency;
+        console.log(trainArrival);
+
+        
+    })
     //everytime you add, take snapshot and retrieve info
     //   snapshot.trainname etc
 
