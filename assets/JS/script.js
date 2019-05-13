@@ -49,7 +49,7 @@ $(document).ready(function(){
     //Append Train Data to Table with a loop ?
     
     //on value snapshot <---
-    dataRef.ref().on("child_added", function (childSnapshot) {
+    database.ref().on("child_added", function (childSnapshot) {
         var train_name = childSnapshot.val().name;
         var train_Destination = childSnapshot.val().destination;
         var train_time = childSnapshot.val().time;
@@ -64,10 +64,25 @@ $(document).ready(function(){
         var time_diference = moment().diff(moment(firstTimeConverted),"minutes");
         console.log("Diference in Time: " + time_diference);
 
-        var trainArrival = time_diference % train_Frequency;
-        console.log(trainArrival);
-
+        var time_remaining = time_diference % train_Frequency;
+        console.log("Train Arriving in: " + time_remaining);
         
+        //Next Train Calc
+        var timeForNextTrain = train_Frequency - time_remaining;
+        console.log("Time until next train: " + timeForNextTrain);
+
+        var nextTrain = moment().add(timeForNextTrain, "minutes");
+        
+        //JQuery / ADD new row for train info
+        var newRow = $('<tr>').append(
+            $("<td>").text(train_name),
+            $("<td>").text(train_Destination),
+            $("<td>").text(train_Frequency),
+            $("<td>").text((nextTrain).format("hh:mm")),
+            $("<td>").text(timeForNextTrain),
+            $("<td>").text(train_time)
+        );
+        $("#trainTable").append(newRow)
     })
     //everytime you add, take snapshot and retrieve info
     //   snapshot.trainname etc
